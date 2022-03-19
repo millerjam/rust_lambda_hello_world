@@ -49,6 +49,6 @@ mod tests {
         let payload = json!({"something": "wrong"});
         let event = LambdaEvent { payload, context };
         let result = func(event).await.unwrap();
-        assert_eq!(result["message"], "Hello, world!");
+        assert_eq!(result["message"], "Hello, World!");
     }
 }
