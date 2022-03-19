@@ -28,3 +28,27 @@ async fn func(event: LambdaEvent<Value>) -> Result<Value, Error> {
     info!("going to say hello to {}", first_name);
     Ok(json!({ "message": format!("Hello, {}!", first_name) }))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use lambda_runtime::Context;
+
+    #[tokio::test]
+    async fn test_func() {
+        let context = Context::default();
+        let payload = json!({"firstName": "James"});
+        let event = LambdaEvent { payload, context };
+        let result = func(event).await.unwrap();
+        assert_eq!(result["message"], "Hello, James!");
+    }
+
+    #[tokio::test]
+    async fn test_func_bad_request() {
+        let context = Context::default();
+        let payload = json!({"something": "wrong"});
+        let event = LambdaEvent { payload, context };
+        let result = func(event).await.unwrap();
+        assert_eq!(result["message"], "Hello, world!");
+    }
+}
